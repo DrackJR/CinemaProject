@@ -100,7 +100,9 @@ namespace CinemaProject.Repositories
         {
             using (NpgsqlConnection conn = ConnectionDB())
             {
-                using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO watch_history (user_id, movie_id) VALUES (@userId, @movieId)", conn))
+                string sql = "INSERT INTO watch_history (user_id, movie_id) VALUES (@userId, @movieId) ON CONFLICT DO NOTHING";
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@userId", userId);
                     cmd.Parameters.AddWithValue("@movieId", movieId);

@@ -16,16 +16,20 @@
 
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VideoPlayerForm));
             this.wmpPlayer = new AxWMPLib.AxWindowsMediaPlayer();
             ((System.ComponentModel.ISupportInitialize)(this.wmpPlayer)).BeginInit();
             this.SuspendLayout();
             // 
             // wmpPlayer
             // 
-            this.wmpPlayer.Dock = System.Windows.Forms.DockStyle.Fill; // Растягиваем плеер на всё окно
+            this.wmpPlayer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.wmpPlayer.Enabled = true;
             this.wmpPlayer.Location = new System.Drawing.Point(0, 0);
             this.wmpPlayer.Name = "wmpPlayer";
+            this.wmpPlayer.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("wmpPlayer.OcxState")));
             this.wmpPlayer.Size = new System.Drawing.Size(800, 450);
             this.wmpPlayer.TabIndex = 0;
             // 
@@ -41,6 +45,7 @@
             this.Load += new System.EventHandler(this.VideoPlayerForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.wmpPlayer)).EndInit();
             this.ResumeLayout(false);
+
         }
     }
 }

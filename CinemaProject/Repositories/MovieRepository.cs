@@ -23,7 +23,7 @@ namespace CinemaProject.Repositories
             List<Movie> movies = new List<Movie>();
             using (NpgsqlConnection conn = ConnectionDB())
             {
-                string sql = "SELECT id, title, genre, rating, description, video_480p, video_720p, video_1080p FROM movies ORDER BY title";
+                string sql = "SELECT id, title, genre, rating, description, video_480p, video_720p, video_1080p, poster_path FROM movies ORDER BY title";
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
                 {
                     using (NpgsqlDataReader reader = cmd.ExecuteReader())
@@ -42,7 +42,7 @@ namespace CinemaProject.Repositories
         {
             using (NpgsqlConnection conn = ConnectionDB())
             {
-                string sql = "SELECT id, title, genre, rating, description, video_480p, video_720p, video_1080p FROM movies WHERE id = @id";
+                string sql = "SELECT id, title, genre, rating, description, video_480p, video_720p, video_1080p, poster_path FROM movies WHERE id = @id";
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("id", id);
@@ -61,7 +61,7 @@ namespace CinemaProject.Repositories
             List<Movie> movies = new List<Movie>();
             using (NpgsqlConnection conn = ConnectionDB())
             {
-                string sql = "SELECT id, title, genre, rating, description, video_480p, video_720p, video_1080p FROM movies WHERE genre = @genre ORDER BY title";
+                string sql = "SELECT id, title, genre, rating, description, video_480p, video_720p, video_1080p, poster_path FROM movies WHERE genre = @genre ORDER BY title";
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("genre", genre);
@@ -80,7 +80,7 @@ namespace CinemaProject.Repositories
             List<Movie> movies = new List<Movie>();
             using (NpgsqlConnection conn = ConnectionDB())
             {
-                string sql = "SELECT id, title, genre, rating, description, video_480p, video_720p, video_1080p FROM movies WHERE title ILIKE @query ORDER BY title";
+                string sql = "SELECT id, title, genre, rating, description, video_480p, video_720p, video_1080p, poster_path FROM movies WHERE title ILIKE @query ORDER BY title";
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("query", "%" + searchTerm + "%");
@@ -97,16 +97,20 @@ namespace CinemaProject.Repositories
         {
             using (NpgsqlConnection conn = ConnectionDB())
             {
-                string sql = "INSERT INTO movies (title, genre, rating, description, video_480p, video_720p, video_1080p) VALUES (@title, @genre, @rating, @desc, @v480, @v720, @v1080)";
+                string sql = "INSERT INTO movies (title, genre, rating, description, video_480p, video_720p, video_1080p, poster_path) " +
+                     "VALUES (@title, @genre, @rating, @desc, @v480, @v720, @v1080, @poster)";
+
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("title", movie.Title);
                     cmd.Parameters.AddWithValue("genre", movie.Genre);
                     cmd.Parameters.AddWithValue("rating", Convert.ToDecimal(movie.Rating));
-                    cmd.Parameters.AddWithValue("desc", movie.Description);
-                    cmd.Parameters.AddWithValue("v480", movie.VideoPath480p);
-                    cmd.Parameters.AddWithValue("v720", movie.VideoPath720p);
-                    cmd.Parameters.AddWithValue("v1080", movie.VideoPath1080p);
+                    cmd.Parameters.AddWithValue("desc", movie.Description ?? string.Empty);
+                    cmd.Parameters.AddWithValue("v480", movie.VideoPath480p ?? string.Empty);
+                    cmd.Parameters.AddWithValue("v720", movie.VideoPath720p ?? string.Empty);
+                    cmd.Parameters.AddWithValue("v1080", movie.VideoPath1080p ?? string.Empty);
+                    cmd.Parameters.AddWithValue("poster", movie.PosterPath ?? string.Empty);
+
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -153,6 +157,7 @@ namespace CinemaProject.Repositories
             m.VideoPath480p = reader.GetString(5);
             m.VideoPath720p = reader.GetString(6);
             m.VideoPath1080p = reader.GetString(7);
+            m.PosterPath = reader.GetString(8);
             return m;
         }
     }

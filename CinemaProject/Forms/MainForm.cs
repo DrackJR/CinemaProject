@@ -228,5 +228,13 @@ namespace CinemaProject.Forms
                 lbRecommendations.Items.Add(r.Title + " — ★" + r.Rating.ToString("F1"));
             }
         }
+
+        private void btnOpenHistory_Click(object sender, EventArgs e)
+        {
+            using (HistoryForm historyForm = new HistoryForm(currentUser_))
+            {
+                historyForm.ShowDialog();
+            }
+        }
     }
 }

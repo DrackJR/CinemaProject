@@ -120,14 +120,30 @@ namespace CinemaProject.Repositories
         {
             using (NpgsqlConnection conn = ConnectionDB())
             {
-                string sql = "UPDATE movies SET title=@title, genre=@genre, rating=@rating, description=@desc WHERE id=@id";
+                string sql = @"UPDATE movies 
+                       SET title = @title, 
+                           genre = @genre, 
+                           rating = @rating, 
+                           description = @desc, 
+                           poster_path = @poster, 
+                           video_480p = @v480, 
+                           video_720p = @v720, 
+                           video_1080p = @v1080 
+                       WHERE id = @id";
+
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("id", movie.Id);
                     cmd.Parameters.AddWithValue("title", movie.Title);
                     cmd.Parameters.AddWithValue("genre", movie.Genre);
                     cmd.Parameters.AddWithValue("rating", Convert.ToDecimal(movie.Rating));
-                    cmd.Parameters.AddWithValue("desc", movie.Description);
+                    cmd.Parameters.AddWithValue("desc", movie.Description ?? string.Empty);
+
+                    cmd.Parameters.AddWithValue("poster", movie.PosterPath ?? string.Empty);
+                    cmd.Parameters.AddWithValue("v480", movie.VideoPath480p ?? string.Empty);
+                    cmd.Parameters.AddWithValue("v720", movie.VideoPath720p ?? string.Empty);
+                    cmd.Parameters.AddWithValue("v1080", movie.VideoPath1080p ?? string.Empty);
+
                     cmd.ExecuteNonQuery();
                 }
             }

@@ -109,6 +109,7 @@ namespace CinemaProject.Forms
             this.Name = "MovieEditForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Добавление фильма";
+            this.Load += new System.EventHandler(this.MovieEditForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
         }

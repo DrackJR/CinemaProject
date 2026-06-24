@@ -1,4 +1,4 @@
-﻿    using CinemaProject.Managers;
+﻿using CinemaProject.Managers;
 using CinemaProject.Models;
 using System;
 using System.Collections.Generic;
@@ -36,7 +36,7 @@ namespace CinemaProject.Forms
             flpMovieCatalog.Controls.Clear();
             foreach (Movie movie in movies)
             {
-                int cardHeight = (currentUser_.Role == "Admin") ? 250 : 220;
+                int cardHeight = (currentUser_.Role == "Admin") ? 280 : 220;
 
                 Panel card = new Panel()
                 {
@@ -57,25 +57,19 @@ namespace CinemaProject.Forms
                     Location = new Point(10, 10),
                     SizeMode = PictureBoxSizeMode.Zoom
                 };
-
                 pbPoster.Click += (s, e) => MovieCard_Click(card, e);
 
                 string pathFromDb = movie.PosterPath ?? "";
-
                 string fullPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, pathFromDb);
 
-
-                    if (System.IO.File.Exists(fullPath))
-                    {
-                        pbPoster.ImageLocation = fullPath;
-                        pbPoster.SizeMode = PictureBoxSizeMode.Zoom;
-                    }
-                    else
-                    {
-                        pbPoster.BackColor = Color.Gray;
-                    }
-
-            
+                if (System.IO.File.Exists(fullPath))
+                {
+                    pbPoster.ImageLocation = fullPath;
+                }
+                else
+                {
+                    pbPoster.BackColor = Color.Gray;
+                }
                 card.Controls.Add(pbPoster);
 
                 Label lbl = new Label()
@@ -91,18 +85,53 @@ namespace CinemaProject.Forms
 
                 if (currentUser_.Role == "Admin")
                 {
+                    Button btnEdit = new Button()
+                    {
+                        Text = "Редактировать",
+                        Location = new Point(10, 215),
+                        Width = 130,
+                        Height = 25,
+                        BackColor = Color.LightBlue
+                    };
+                    btnEdit.Click += (s, ev) =>
+                    {
+                        using (MovieEditForm editForm = new MovieEditForm(movie))
+                        {
+                            if (editForm.ShowDialog() == DialogResult.OK)
+                            {
+                                LoadMovieCatalog(_movieManager.GetAllMovies());
+                            }
+                        }
+                    };
+                    card.Controls.Add(btnEdit);
+
                     Button btnDelete = new Button()
                     {
                         Text = "Удалить",
-                        Location = new Point(10, 215),
+                        Location = new Point(10, 245),
                         Width = 130,
                         Height = 25,
                         BackColor = Color.LightCoral
                     };
+                    btnDelete.Click += (s, ev) =>
+                    {
+                        DialogResult dr = MessageBox.Show($"Вы уверены, что хотите удалить фильм \"{movie.Title}\"?",
+                            "Удаление фильма", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                    btnDelete.Tag = movie.Id;
-                    btnDelete.Click += BtnDelete_Click;
-
+                        if (dr == DialogResult.Yes)
+                        {
+                            try
+                            {
+                                _movieManager.DeleteMovie(movie.Id);
+                                MessageBox.Show("Фильм успешно удален!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                LoadMovieCatalog(_movieManager.GetAllMovies()); 
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("Ошибка при удалении: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    };
                     card.Controls.Add(btnDelete);
                 }
 

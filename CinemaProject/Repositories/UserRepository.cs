@@ -26,7 +26,7 @@ namespace CinemaProject.Repositories
             catch { return false; }
         }
 
-        public User Authenticate(string login, string passwordHash)
+        public User Authenticate(string login, string password)
         {
             using (NpgsqlConnection conn = ConnectionDB())
             {
@@ -34,7 +34,7 @@ namespace CinemaProject.Repositories
                 using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@login", login);
-                    cmd.Parameters.AddWithValue("@password", passwordHash);
+                    cmd.Parameters.AddWithValue("@password", password);
 
                     using (NpgsqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -65,14 +65,14 @@ namespace CinemaProject.Repositories
             }
         }
 
-        public void RegisterUser(string login, string passwordHash, string role)
+        public void RegisterUser(string login, string password, string role)
         {
             using (NpgsqlConnection conn = ConnectionDB())
             {
                 using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO users (login, password, role) VALUES (@login, @password, @role)", conn))
                 {
                     cmd.Parameters.AddWithValue("@login", login);
-                    cmd.Parameters.AddWithValue("@password", passwordHash);
+                    cmd.Parameters.AddWithValue("@password", password);
                     cmd.Parameters.AddWithValue("@role", role);
                     cmd.ExecuteNonQuery();
                 }

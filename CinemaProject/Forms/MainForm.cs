@@ -10,8 +10,8 @@ namespace CinemaProject.Forms
     public partial class MainForm : Form
     {
         private readonly User currentUser_;
-        private readonly MovieManager _movieManager = new MovieManager();
-        private readonly UserManager _userManager = new UserManager();
+        private readonly MovieManager movieManager_ = new MovieManager();
+        private readonly UserManager userManager_ = new UserManager();
 
         public MainForm(User user)
         {
@@ -27,13 +27,31 @@ namespace CinemaProject.Forms
 
             if (currentUser_.Role == "Admin") btnAdminPanel.Visible = true;
 
-            LoadMovieCatalog(_movieManager.GetAllMovies());
+            LoadMovieCatalog(movieManager_.GetAllMovies());
             RenderRecommendations();
         }
 
         public void LoadMovieCatalog(List<Movie> movies)
         {
             flpMovieCatalog.Controls.Clear();
+
+            if (movies == null || movies.Count == 0)
+            {
+                Label lblEmpty = new Label()
+                {
+                    Text = "Не удалось загрузить список фильмов. Попробуйте зайти позже",
+                    ForeColor = Color.Gray,
+                    Font = new Font("Segoe UI", 12, FontStyle.Italic),
+                    AutoSize = false,
+                    Width = flpMovieCatalog.Width - 30,
+                    Height = 100,
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+
+                flpMovieCatalog.Controls.Add(lblEmpty);
+                return;
+            }
+
             foreach (Movie movie in movies)
             {
                 int cardHeight = (currentUser_.Role == "Admin") ? 280 : 220;
@@ -59,16 +77,16 @@ namespace CinemaProject.Forms
                 };
                 pbPoster.Click += (s, e) => MovieCard_Click(card, e);
 
-                string pathFromDb = movie.PosterPath ?? "";
-                string fullPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, pathFromDb);
-
-                if (System.IO.File.Exists(fullPath))
+                if (!string.IsNullOrEmpty(movie.PosterPath))
                 {
-                    pbPoster.ImageLocation = fullPath;
-                }
-                else
-                {
-                    pbPoster.BackColor = Color.Gray;
+                    try
+                    {
+                        pbPoster.Image = Image.FromFile(movie.PosterPath);
+                    }
+                    catch
+                    {
+                        pbPoster.Image = null;
+                    }
                 }
                 card.Controls.Add(pbPoster);
 
@@ -99,7 +117,7 @@ namespace CinemaProject.Forms
                         {
                             if (editForm.ShowDialog() == DialogResult.OK)
                             {
-                                LoadMovieCatalog(_movieManager.GetAllMovies());
+                                LoadMovieCatalog(movieManager_.GetAllMovies());
                             }
                         }
                     };
@@ -122,9 +140,8 @@ namespace CinemaProject.Forms
                         {
                             try
                             {
-                                _movieManager.DeleteMovie(movie.Id);
-                                MessageBox.Show("Фильм успешно удален!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                LoadMovieCatalog(_movieManager.GetAllMovies()); 
+                                movieManager_.DeleteMovie(movie.Id);
+                                LoadMovieCatalog(movieManager_.GetAllMovies()); 
                             }
                             catch (Exception ex)
                             {
@@ -148,7 +165,7 @@ namespace CinemaProject.Forms
 
             try
             {
-                _movieManager.DeleteMovie(movieId);
+                movieManager_.DeleteMovie(movieId);
 
                 Control cardPanel = clickedButton.Parent;
                 if (cardPanel != null)
@@ -166,12 +183,12 @@ namespace CinemaProject.Forms
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            LoadMovieCatalog(_movieManager.SearchMovies(txtSearch.Text));
+            LoadMovieCatalog(movieManager_.SearchMovies(txtSearch.Text));
         }
 
         private void cmbGenreFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadMovieCatalog(_movieManager.FilterByGenre(cmbGenreFilter.Text));
+            LoadMovieCatalog(movieManager_.FilterByGenre(cmbGenreFilter.Text));
         }
 
         private void btnAdminPanel_Click(object sender, EventArgs e)
@@ -180,7 +197,7 @@ namespace CinemaProject.Forms
             {
                 editForm.ShowDialog();
             }
-            LoadMovieCatalog(_movieManager.GetAllMovies());
+            LoadMovieCatalog(movieManager_.GetAllMovies());
         }
 
         private void MovieCard_Click(object sender, EventArgs e)
@@ -189,26 +206,88 @@ namespace CinemaProject.Forms
             if (card != null && card.Tag is Movie movie)
             {
                 string quality = "720p";
-                using (Form qForm = new Form() { Text = "Качество", Width = 200, Height = 150, StartPosition = FormStartPosition.CenterParent })
+                using (Form qForm = new Form() { Text = "О фильме: " + movie.Title, Width = 350, Height = 300, FormBorderStyle = FormBorderStyle.FixedDialog, MaximizeBox = false, MinimizeBox = false, StartPosition = FormStartPosition.CenterParent })
                 {
-                    RadioButton r1 = new RadioButton() { Text = "480p", Top = 10, Left = 20 };
-                    RadioButton r2 = new RadioButton() { Text = "720p", Top = 35, Left = 20, Checked = true };
-                    RadioButton r3 = new RadioButton() { Text = "1080p", Top = 60, Left = 20 };
-                    Button ok = new Button() { Text = "ОК", Top = 85, Left = 50 };
+                    TextBox txtMovieDescription = new TextBox()
+                    {
+                        Text = string.IsNullOrEmpty(movie.Description) ? "Описание отсутствует." : movie.Description,
+                        Top = 15,
+                        Left = 15,
+                        Width = 305,
+                        Height = 100,
+                        Multiline = true,
+                        ReadOnly = true,
+                        ScrollBars = ScrollBars.Vertical,
+                        BackColor = SystemColors.Control,
+                        BorderStyle = BorderStyle.FixedSingle
+                    };
+                    RadioButton r1 = new RadioButton() { Text = "480p", Top = 130, Left = 20 };
+                    RadioButton r2 = new RadioButton() { Text = "720p", Top = 155, Left = 20, Checked = true };
+                    RadioButton r3 = new RadioButton() { Text = "1080p", Top = 180, Left = 20 };
+
+                    Button ok = new Button() { Text = "Смотреть", Top = 215, Left = 120, Width = 100, Height = 30 };
+
                     ok.Click += (s, ev) => {
                         if (r1.Checked) quality = "480p";
+                        if (r2.Checked) quality = "720p";
                         if (r3.Checked) quality = "1080p";
+
+                        qForm.DialogResult = DialogResult.OK;
                         qForm.Close();
                     };
-                    qForm.Controls.Add(r1); qForm.Controls.Add(r2); qForm.Controls.Add(r3); qForm.Controls.Add(ok);
-                    qForm.ShowDialog();
+
+                    qForm.Controls.Add(txtMovieDescription);
+                    qForm.Controls.Add(r1);
+                    qForm.Controls.Add(r2);
+                    qForm.Controls.Add(r3);
+                    qForm.Controls.Add(ok);
+
+                    if (qForm.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
                 }
 
-                _userManager.AddToHistory(movie.Id);
-
-                RenderRecommendations();
-
                 string videoPath = movie.GetVideoPathByQuality(quality);
+
+                if (string.IsNullOrEmpty(videoPath))
+                {
+                    string[] backupQualities;
+
+                    if (quality == "720p")
+                    {
+                        backupQualities = new string[] { "1080p", "480p" };
+                    }
+                    else if (quality == "1080p")
+                    {
+                        backupQualities = new string[] { "720p", "480p" };
+                    }
+                    else
+                    {
+                        backupQualities = new string[] { "720p", "1080p" };
+                    }
+
+                    bool alternativeFound = false;
+                    foreach (string altQuality in backupQualities)
+                    {
+                        string altPath = movie.GetVideoPathByQuality(altQuality);
+
+                        if (!string.IsNullOrEmpty(altPath))
+                        {
+                            videoPath = altPath;
+                            alternativeFound = true;
+                            break;
+                        }
+                    }
+
+                    if (!alternativeFound)
+                    {
+                        MessageBox.Show("Видео недоступно", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                }
+                userManager_.AddToHistory(movie.Id);
+                RenderRecommendations();
 
                 using (VideoPlayerForm playerForm = new VideoPlayerForm(videoPath))
                 {
@@ -221,7 +300,7 @@ namespace CinemaProject.Forms
         {
             lbRecommendations.Items.Clear();
 
-            List<Movie> recs = _userManager.GetPersonalRecommendations(_movieManager);
+            List<Movie> recs = userManager_.GetPersonalRecommendations(movieManager_);
 
             foreach (Movie r in recs)
             {

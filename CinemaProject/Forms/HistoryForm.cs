@@ -9,14 +9,14 @@ namespace CinemaProject.Forms
 {
     public partial class HistoryForm : Form
     {
-        private readonly User _user;
-        private readonly MovieManager _movieManager = new MovieManager();
-        private readonly UserRepository _userRepository = new UserRepository(); // Для получения ID фильмов из истории
+        private readonly User user_;
+        private readonly MovieManager movieManager_ = new MovieManager();
+        private readonly UserRepository userRepository_ = new UserRepository();
 
         public HistoryForm(User user)
         {
             InitializeComponent();
-            _user = user;
+            user_ = user;
         }
 
         private void HistoryForm_Load(object sender, EventArgs e)
@@ -25,8 +25,7 @@ namespace CinemaProject.Forms
 
             try
             {
-                // 1. Получаем список ID просмотренных фильмов для текущего пользователя из базы
-                List<int> movieIds = _userRepository.GetUserHistory(_user.Id);
+                List<int> movieIds = userRepository_.GetUserHistory(user_.Id);
 
                 if (movieIds.Count == 0)
                 {
@@ -34,10 +33,9 @@ namespace CinemaProject.Forms
                     return;
                 }
 
-                // 2. Для каждого ID достаем название фильма и выводим его в список
                 foreach (int movieId in movieIds)
                 {
-                    Movie movie = _movieManager.GetMovieById(movieId);
+                    Movie movie = movieManager_.GetMovieById(movieId);
                     if (movie != null)
                     {
                         lbHistory.Items.Add($"{movie.Title} ({movie.Genre})");

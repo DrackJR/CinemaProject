@@ -91,7 +91,7 @@ namespace CinemaProject.Forms
             this.btnOpenHistory.Size = new System.Drawing.Size(169, 25);
             this.btnOpenHistory.TabIndex = 6;
             this.btnOpenHistory.Text = "История просмотров";
-            this.btnOpenHistory.Visible = false;
+            this.btnOpenHistory.Visible = true;
             this.btnOpenHistory.Click += new System.EventHandler(this.btnOpenHistory_Click);
             // 
             // MainForm

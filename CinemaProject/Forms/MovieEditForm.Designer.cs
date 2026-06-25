@@ -9,7 +9,7 @@ namespace CinemaProject.Forms
         private System.Windows.Forms.Label lblGenre;
         private System.Windows.Forms.Label lblRating;
         private System.Windows.Forms.TextBox txtTitle;
-        private System.Windows.Forms.TextBox txtGenre;
+        private System.Windows.Forms.ComboBox cmbGenre;
         private System.Windows.Forms.TextBox txtRating;
         private System.Windows.Forms.Button btnSave;
 
@@ -27,7 +27,7 @@ namespace CinemaProject.Forms
             this.lblTitle = new System.Windows.Forms.Label();
             this.txtTitle = new System.Windows.Forms.TextBox();
             this.lblGenre = new System.Windows.Forms.Label();
-            this.txtGenre = new System.Windows.Forms.TextBox();
+            this.cmbGenre = new System.Windows.Forms.ComboBox();
             this.lblRating = new System.Windows.Forms.Label();
             this.txtRating = new System.Windows.Forms.TextBox();
             this.lblDesc = new System.Windows.Forms.Label();
@@ -55,7 +55,8 @@ namespace CinemaProject.Forms
             this.txtTitle.Location = new System.Drawing.Point(110, 20); this.txtTitle.Size = new System.Drawing.Size(230, 20);
 
             this.lblGenre.Location = new System.Drawing.Point(15, 50); this.lblGenre.Size = new System.Drawing.Size(90, 20); this.lblGenre.Text = "Жанр:";
-            this.txtGenre.Location = new System.Drawing.Point(110, 50); this.txtGenre.Size = new System.Drawing.Size(230, 20);
+            this.cmbGenre.Location = new System.Drawing.Point(110, 50); this.cmbGenre.Size = new System.Drawing.Size(230, 21);
+            this.cmbGenre.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 
             this.lblRating.Location = new System.Drawing.Point(15, 80); this.lblRating.Size = new System.Drawing.Size(90, 20); this.lblRating.Text = "Рейтинг:";
             this.txtRating.Location = new System.Drawing.Point(110, 80); this.txtRating.Size = new System.Drawing.Size(230, 20);
@@ -96,7 +97,7 @@ namespace CinemaProject.Forms
             // Настройка самой формы MovieEditForm
             this.ClientSize = new System.Drawing.Size(360, 325);
             this.Controls.Add(this.lblTitle); this.Controls.Add(this.txtTitle);
-            this.Controls.Add(this.lblGenre); this.Controls.Add(this.txtGenre);
+            this.Controls.Add(this.lblGenre); this.Controls.Add(this.cmbGenre);
             this.Controls.Add(this.lblRating); this.Controls.Add(this.txtRating);
             this.Controls.Add(this.lblDesc); this.Controls.Add(this.txtDesc);
             this.Controls.Add(this.lblPoster); this.Controls.Add(this.txtPoster); this.Controls.Add(this.btnBrowsePoster);
@@ -114,7 +115,6 @@ namespace CinemaProject.Forms
             this.PerformLayout();
         }
 
-        // Объявление полей внизу Designer.cs:
         private System.Windows.Forms.Label lblDesc;
         private System.Windows.Forms.TextBox txtDesc;
         private System.Windows.Forms.Label lblPoster;

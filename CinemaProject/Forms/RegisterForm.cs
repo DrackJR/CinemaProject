@@ -6,7 +6,7 @@ namespace CinemaProject.Forms
 {
     public partial class RegisterForm : Form
     {
-        private readonly UserManager _userManager = new UserManager();
+        private readonly UserManager userManager_ = new UserManager();
 
         public RegisterForm()
         {
@@ -21,7 +21,7 @@ namespace CinemaProject.Forms
                 return;
             }
 
-            bool success = _userManager.Register(txtLogin.Text, txtPassword.Text);
+            bool success = userManager_.Register(txtLogin.Text, txtPassword.Text);
             if (success)
             {
                 MessageBox.Show("Регистрация успешна!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -1,5 +1,4 @@
 ﻿using CinemaProject.Models;
-using CinemaProject.Services;
 using CinemaProject.Repositories;
 using System.Collections.Generic;
 

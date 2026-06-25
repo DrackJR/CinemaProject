@@ -7,37 +7,43 @@ namespace CinemaProject.Forms
 {
     public partial class MovieEditForm : Form
     {
-        private readonly MovieManager _movieManager = new MovieManager();
-        private readonly Movie _editingMovie = null;
+        private readonly MovieManager movieManager_ = new MovieManager();
+        private readonly Movie editingMovie_ = null;
 
-        // Этот конструктор вызывается при ДОБАВЛЕНИИ нового фильма
         public MovieEditForm()
         {
             InitializeComponent();
             this.Text = "Добавление фильма";
         }
 
-        // Этот конструктор вызывается при РЕДАКТИРОВАНИИ существующего фильма
         public MovieEditForm(Movie movie)
         {
             InitializeComponent();
-            _editingMovie = movie;
+            editingMovie_ = movie;
             this.Text = "Редактирование фильма";
         }
 
-        // Событие загрузки формы: заполняем поля, если мы редактируем
         private void MovieEditForm_Load(object sender, EventArgs e)
         {
-            if (_editingMovie != null)
+            cmbGenre.Items.Clear();
+            cmbGenre.Items.AddRange(new string[] { "Фантастика", "Драма", "Боевик", "Комедия" });
+            cmbGenre.SelectedIndex = 0;
+
+            if (editingMovie_ != null)
             {
-                txtTitle.Text = _editingMovie.Title;
-                txtGenre.Text = _editingMovie.Genre;
-                txtRating.Text = _editingMovie.Rating.ToString();
-                txtDesc.Text = _editingMovie.Description;
-                txtPoster.Text = _editingMovie.PosterPath;
-                txtV480.Text = _editingMovie.VideoPath480p;
-                txtV720.Text = _editingMovie.VideoPath720p;
-                txtV1080.Text = _editingMovie.VideoPath1080p;
+                btnSave.Text = "Изменить";
+                txtTitle.Text = editingMovie_.Title;
+                txtRating.Text = editingMovie_.Rating.ToString();
+                txtDesc.Text = editingMovie_.Description;
+                txtPoster.Text = editingMovie_.PosterPath;
+                txtV480.Text =  editingMovie_.VideoPath480p;
+                txtV720.Text = editingMovie_.VideoPath720p;
+                txtV1080.Text = editingMovie_.VideoPath1080p;
+
+                if (cmbGenre.Items.Contains(editingMovie_.Genre))
+                {
+                    cmbGenre.SelectedItem = editingMovie_.Genre;
+                }
             }
         }
 
@@ -49,7 +55,7 @@ namespace CinemaProject.Forms
                 ofd.Title = "Выберите постер фильма";
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    txtPoster.Text = System.IO.Path.GetFileName(ofd.FileName);
+                    txtPoster.Text = ofd.FileName;
                 }
             }
         }
@@ -66,7 +72,7 @@ namespace CinemaProject.Forms
                 ofd.Title = "Выберите видео " + quality;
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    targetTextBox.Text = System.IO.Path.GetFileName(ofd.FileName);
+                    targetTextBox.Text = ofd.FileName;
                 }
             }
         }
@@ -82,13 +88,14 @@ namespace CinemaProject.Forms
             double rate = 0;
             double.TryParse(txtRating.Text, out rate);
 
-            if (_editingMovie == null)
+            string selectedGenre = cmbGenre.SelectedItem?.ToString() ?? "Фантастика";
+
+            if (editingMovie_ == null)
             {
-                // Логика добавления нового фильма
                 Movie newMovie = new Movie()
                 {
                     Title = txtTitle.Text,
-                    Genre = txtGenre.Text,
+                    Genre = selectedGenre,
                     Rating = rate,
                     Description = txtDesc.Text,
                     PosterPath = txtPoster.Text,
@@ -99,8 +106,7 @@ namespace CinemaProject.Forms
 
                 try
                 {
-                    _movieManager.AddMovie(newMovie);
-                    MessageBox.Show("Фильм успешно добавлен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    movieManager_.AddMovie(newMovie);
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
@@ -111,20 +117,18 @@ namespace CinemaProject.Forms
             }
             else
             {
-                // Логика редактирования существующего фильма
-                _editingMovie.Title = txtTitle.Text;
-                _editingMovie.Genre = txtGenre.Text;
-                _editingMovie.Rating = rate;
-                _editingMovie.Description = txtDesc.Text;
-                _editingMovie.PosterPath = txtPoster.Text;
-                _editingMovie.VideoPath480p = txtV480.Text;
-                _editingMovie.VideoPath720p = txtV720.Text;
-                _editingMovie.VideoPath1080p = txtV1080.Text;
+                editingMovie_.Title = txtTitle.Text;
+                editingMovie_.Genre = selectedGenre;
+                editingMovie_.Rating = rate;
+                editingMovie_.Description = txtDesc.Text;
+                editingMovie_.PosterPath = txtPoster.Text;
+                editingMovie_.VideoPath480p = txtV480.Text;
+                editingMovie_.VideoPath720p = txtV720.Text;
+                editingMovie_.VideoPath1080p = txtV1080.Text;
 
                 try
                 {
-                    _movieManager.UpdateMovie(_editingMovie);
-                    MessageBox.Show("Фильм успешно обновлен!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    movieManager_.UpdateMovie(editingMovie_);   
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }

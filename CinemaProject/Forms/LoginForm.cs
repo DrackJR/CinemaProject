@@ -7,7 +7,7 @@ namespace CinemaProject.Forms
 {
     public partial class LoginForm : Form
     {
-        private readonly UserManager _userManager = new UserManager();
+        private readonly UserManager userManager_ = new UserManager();
 
         public LoginForm()
         {
@@ -16,7 +16,7 @@ namespace CinemaProject.Forms
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            User user = _userManager.Authenticate(txtLogin.Text, txtPassword.Text);
+            User user = userManager_.Authenticate(txtLogin.Text, txtPassword.Text);
             if (user != null)
             {
                 this.Hide();

@@ -1,6 +1,5 @@
 ﻿using CinemaProject.Data;
 using CinemaProject.Models;
-using CinemaProject;
 using Npgsql;
 using System;
 using System.Collections.Generic;

@@ -60,7 +60,7 @@ namespace CinemaProject.Forms
                 {
                     Width = 150,
                     Height = cardHeight,
-                    BackColor = Color.White,
+                    BackColor = Color.FromArgb(37, 37, 50), // Тёмный фон карточки
                     BorderStyle = BorderStyle.FixedSingle,
                     Margin = new Padding(10),
                     Tag = movie
@@ -73,7 +73,8 @@ namespace CinemaProject.Forms
                     Width = 130,
                     Height = 140,
                     Location = new Point(10, 10),
-                    SizeMode = PictureBoxSizeMode.Zoom
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    Cursor = Cursors.Hand
                 };
                 pbPoster.Click += (s, e) => MovieCard_Click(card, e);
 
@@ -96,7 +97,10 @@ namespace CinemaProject.Forms
                     Location = new Point(10, 155),
                     Width = 130,
                     Height = 35,
-                    TextAlign = ContentAlignment.TopCenter
+                    ForeColor = Color.White, // Белый цвет текста названия
+                    Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                    TextAlign = ContentAlignment.TopCenter,
+                    Cursor = Cursors.Hand
                 };
                 lbl.Click += (s, e) => MovieCard_Click(card, e);
                 card.Controls.Add(lbl);
@@ -109,8 +113,12 @@ namespace CinemaProject.Forms
                         Location = new Point(10, 215),
                         Width = 130,
                         Height = 25,
-                        BackColor = Color.LightBlue
+                        BackColor = Color.FromArgb(55, 55, 70), // Стильный графитовый цвет
+                        ForeColor = Color.White,
+                        FlatStyle = FlatStyle.Flat,
+                        Cursor = Cursors.Hand
                     };
+                    btnEdit.FlatAppearance.BorderSize = 0;
                     btnEdit.Click += (s, ev) =>
                     {
                         using (MovieEditForm editForm = new MovieEditForm(movie))
@@ -129,8 +137,12 @@ namespace CinemaProject.Forms
                         Location = new Point(10, 245),
                         Width = 130,
                         Height = 25,
-                        BackColor = Color.LightCoral
+                        BackColor = Color.FromArgb(220, 53, 69), // Аккуратный плоский красный
+                        ForeColor = Color.White,
+                        FlatStyle = FlatStyle.Flat,
+                        Cursor = Cursors.Hand
                     };
+                    btnDelete.FlatAppearance.BorderSize = 0;
                     btnDelete.Click += (s, ev) =>
                     {
                         DialogResult dr = MessageBox.Show($"Вы уверены, что хотите удалить фильм \"{movie.Title}\"?",
@@ -141,7 +153,7 @@ namespace CinemaProject.Forms
                             try
                             {
                                 movieManager_.DeleteMovie(movie.Id);
-                                LoadMovieCatalog(movieManager_.GetAllMovies()); 
+                                LoadMovieCatalog(movieManager_.GetAllMovies());
                             }
                             catch (Exception ex)
                             {
@@ -206,7 +218,9 @@ namespace CinemaProject.Forms
             if (card != null && card.Tag is Movie movie)
             {
                 string quality = "720p";
-                using (Form qForm = new Form() { Text = "О фильме: " + movie.Title, Width = 350, Height = 300, FormBorderStyle = FormBorderStyle.FixedDialog, MaximizeBox = false, MinimizeBox = false, StartPosition = FormStartPosition.CenterParent })
+
+                // Переводим всплывающее окно на темную тему
+                using (Form qForm = new Form() { Text = "О фильме: " + movie.Title, Width = 350, Height = 300, FormBorderStyle = FormBorderStyle.FixedDialog, MaximizeBox = false, MinimizeBox = false, StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(26, 26, 36) })
                 {
                     TextBox txtMovieDescription = new TextBox()
                     {
@@ -218,14 +232,33 @@ namespace CinemaProject.Forms
                         Multiline = true,
                         ReadOnly = true,
                         ScrollBars = ScrollBars.Vertical,
-                        BackColor = SystemColors.Control,
-                        BorderStyle = BorderStyle.FixedSingle
+                        BackColor = Color.FromArgb(37, 37, 50), // Тёмный фон для описания
+                        ForeColor = Color.White,
+                        BorderStyle = BorderStyle.FixedSingle,
+                        Font = new Font("Segoe UI", 9.5F)
                     };
-                    RadioButton r1 = new RadioButton() { Text = "480p", Top = 130, Left = 20 };
-                    RadioButton r2 = new RadioButton() { Text = "720p", Top = 155, Left = 20, Checked = true };
-                    RadioButton r3 = new RadioButton() { Text = "1080p", Top = 180, Left = 20 };
 
-                    Button ok = new Button() { Text = "Смотреть", Top = 215, Left = 120, Width = 100, Height = 30 };
+                    Color textColor = Color.FromArgb(170, 170, 180);
+                    Font radioFont = new Font("Segoe UI", 9.5F);
+
+                    RadioButton r1 = new RadioButton() { Text = "480p", Top = 130, Left = 20, ForeColor = textColor, Font = radioFont };
+                    RadioButton r2 = new RadioButton() { Text = "720p", Top = 155, Left = 20, Checked = true, ForeColor = textColor, Font = radioFont };
+                    RadioButton r3 = new RadioButton() { Text = "1080p", Top = 180, Left = 20, ForeColor = textColor, Font = radioFont };
+
+                    Button ok = new Button()
+                    {
+                        Text = "Смотреть",
+                        Top = 215,
+                        Left = 110,
+                        Width = 130,
+                        Height = 32,
+                        BackColor = Color.FromArgb(0, 122, 255), // Акцентная синяя кнопка
+                        ForeColor = Color.White,
+                        FlatStyle = FlatStyle.Flat,
+                        Cursor = Cursors.Hand,
+                        Font = new Font("Segoe UI", 9.5F, FontStyle.Bold)
+                    };
+                    ok.FlatAppearance.BorderSize = 0;
 
                     ok.Click += (s, ev) => {
                         if (r1.Checked) quality = "480p";

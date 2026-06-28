@@ -6,7 +6,6 @@ namespace CinemaProject.Managers
 {
     public class UserManager
     {
-        private List<User> users_ = new List<User>();
         private User currentUser_ = new User();
         private readonly UserRepository repo_ = new UserRepository();
 

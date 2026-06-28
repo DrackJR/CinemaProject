@@ -60,7 +60,7 @@ namespace CinemaProject.Forms
                 {
                     Width = 150,
                     Height = cardHeight,
-                    BackColor = Color.FromArgb(37, 37, 50), // Тёмный фон карточки
+                    BackColor = Color.FromArgb(37, 37, 50),
                     BorderStyle = BorderStyle.FixedSingle,
                     Margin = new Padding(10),
                     Tag = movie
@@ -97,7 +97,7 @@ namespace CinemaProject.Forms
                     Location = new Point(10, 155),
                     Width = 130,
                     Height = 35,
-                    ForeColor = Color.White, // Белый цвет текста названия
+                    ForeColor = Color.White,
                     Font = new Font("Segoe UI", 9F, FontStyle.Regular),
                     TextAlign = ContentAlignment.TopCenter,
                     Cursor = Cursors.Hand
@@ -113,7 +113,7 @@ namespace CinemaProject.Forms
                         Location = new Point(10, 215),
                         Width = 130,
                         Height = 25,
-                        BackColor = Color.FromArgb(55, 55, 70), // Стильный графитовый цвет
+                        BackColor = Color.FromArgb(55, 55, 70),
                         ForeColor = Color.White,
                         FlatStyle = FlatStyle.Flat,
                         Cursor = Cursors.Hand
@@ -137,7 +137,7 @@ namespace CinemaProject.Forms
                         Location = new Point(10, 245),
                         Width = 130,
                         Height = 25,
-                        BackColor = Color.FromArgb(220, 53, 69), // Аккуратный плоский красный
+                        BackColor = Color.FromArgb(220, 53, 69),
                         ForeColor = Color.White,
                         FlatStyle = FlatStyle.Flat,
                         Cursor = Cursors.Hand
@@ -219,7 +219,6 @@ namespace CinemaProject.Forms
             {
                 string quality = "720p";
 
-                // Переводим всплывающее окно на темную тему
                 using (Form qForm = new Form() { Text = "О фильме: " + movie.Title, Width = 350, Height = 300, FormBorderStyle = FormBorderStyle.FixedDialog, MaximizeBox = false, MinimizeBox = false, StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(26, 26, 36) })
                 {
                     TextBox txtMovieDescription = new TextBox()
@@ -232,7 +231,7 @@ namespace CinemaProject.Forms
                         Multiline = true,
                         ReadOnly = true,
                         ScrollBars = ScrollBars.Vertical,
-                        BackColor = Color.FromArgb(37, 37, 50), // Тёмный фон для описания
+                        BackColor = Color.FromArgb(37, 37, 50),
                         ForeColor = Color.White,
                         BorderStyle = BorderStyle.FixedSingle,
                         Font = new Font("Segoe UI", 9.5F)
@@ -252,7 +251,7 @@ namespace CinemaProject.Forms
                         Left = 110,
                         Width = 130,
                         Height = 32,
-                        BackColor = Color.FromArgb(0, 122, 255), // Акцентная синяя кнопка
+                        BackColor = Color.FromArgb(0, 122, 255),
                         ForeColor = Color.White,
                         FlatStyle = FlatStyle.Flat,
                         Cursor = Cursors.Hand,

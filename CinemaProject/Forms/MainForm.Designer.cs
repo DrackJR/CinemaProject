@@ -39,7 +39,7 @@ namespace CinemaProject.Forms
             this.txtSearch.ForeColor = System.Drawing.Color.White;
             this.txtSearch.Location = new System.Drawing.Point(20, 25);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(200, 29);
+            this.txtSearch.Size = new System.Drawing.Size(200, 24);
             this.txtSearch.TabIndex = 0;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
@@ -51,7 +51,7 @@ namespace CinemaProject.Forms
             this.cmbGenreFilter.ForeColor = System.Drawing.Color.White;
             this.cmbGenreFilter.Location = new System.Drawing.Point(240, 25);
             this.cmbGenreFilter.Name = "cmbGenreFilter";
-            this.cmbGenreFilter.Size = new System.Drawing.Size(130, 29);
+            this.cmbGenreFilter.Size = new System.Drawing.Size(130, 25);
             this.cmbGenreFilter.TabIndex = 1;
             this.cmbGenreFilter.SelectedIndexChanged += new System.EventHandler(this.cmbGenreFilter_SelectedIndexChanged);
             // 
@@ -85,10 +85,10 @@ namespace CinemaProject.Forms
             this.lbRecommendations.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(37)))), ((int)(((byte)(37)))), ((int)(((byte)(50)))));
             this.lbRecommendations.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbRecommendations.ForeColor = System.Drawing.Color.White;
-            this.lbRecommendations.ItemHeight = 21;
+            this.lbRecommendations.ItemHeight = 17;
             this.lbRecommendations.Location = new System.Drawing.Point(590, 91);
             this.lbRecommendations.Name = "lbRecommendations";
-            this.lbRecommendations.Size = new System.Drawing.Size(260, 422);
+            this.lbRecommendations.Size = new System.Drawing.Size(260, 410);
             this.lbRecommendations.TabIndex = 5;
             // 
             // lblRecTitle
@@ -131,6 +131,7 @@ namespace CinemaProject.Forms
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Онлайн-кинотеатр";

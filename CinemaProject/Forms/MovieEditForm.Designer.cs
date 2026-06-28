@@ -63,7 +63,7 @@ namespace CinemaProject.Forms
             this.txtTitle.ForeColor = System.Drawing.Color.White;
             this.txtTitle.Location = new System.Drawing.Point(129, 18);
             this.txtTitle.Name = "txtTitle";
-            this.txtTitle.Size = new System.Drawing.Size(251, 29);
+            this.txtTitle.Size = new System.Drawing.Size(251, 24);
             this.txtTitle.TabIndex = 1;
             // 
             // lblGenre
@@ -83,7 +83,7 @@ namespace CinemaProject.Forms
             this.cmbGenre.ForeColor = System.Drawing.Color.White;
             this.cmbGenre.Location = new System.Drawing.Point(129, 48);
             this.cmbGenre.Name = "cmbGenre";
-            this.cmbGenre.Size = new System.Drawing.Size(251, 29);
+            this.cmbGenre.Size = new System.Drawing.Size(251, 25);
             this.cmbGenre.TabIndex = 3;
             // 
             // lblRating
@@ -102,7 +102,7 @@ namespace CinemaProject.Forms
             this.txtRating.ForeColor = System.Drawing.Color.White;
             this.txtRating.Location = new System.Drawing.Point(129, 78);
             this.txtRating.Name = "txtRating";
-            this.txtRating.Size = new System.Drawing.Size(251, 29);
+            this.txtRating.Size = new System.Drawing.Size(251, 24);
             this.txtRating.TabIndex = 5;
             // 
             // lblDesc
@@ -121,7 +121,7 @@ namespace CinemaProject.Forms
             this.txtDesc.ForeColor = System.Drawing.Color.White;
             this.txtDesc.Location = new System.Drawing.Point(129, 108);
             this.txtDesc.Name = "txtDesc";
-            this.txtDesc.Size = new System.Drawing.Size(251, 29);
+            this.txtDesc.Size = new System.Drawing.Size(251, 24);
             this.txtDesc.TabIndex = 7;
             // 
             // lblPoster
@@ -140,7 +140,7 @@ namespace CinemaProject.Forms
             this.txtPoster.ForeColor = System.Drawing.Color.White;
             this.txtPoster.Location = new System.Drawing.Point(129, 138);
             this.txtPoster.Name = "txtPoster";
-            this.txtPoster.Size = new System.Drawing.Size(150, 29);
+            this.txtPoster.Size = new System.Drawing.Size(150, 24);
             this.txtPoster.TabIndex = 9;
             // 
             // lblV480
@@ -159,7 +159,7 @@ namespace CinemaProject.Forms
             this.txtV480.ForeColor = System.Drawing.Color.White;
             this.txtV480.Location = new System.Drawing.Point(129, 168);
             this.txtV480.Name = "txtV480";
-            this.txtV480.Size = new System.Drawing.Size(150, 29);
+            this.txtV480.Size = new System.Drawing.Size(150, 24);
             this.txtV480.TabIndex = 12;
             // 
             // lblV720
@@ -178,7 +178,7 @@ namespace CinemaProject.Forms
             this.txtV720.ForeColor = System.Drawing.Color.White;
             this.txtV720.Location = new System.Drawing.Point(129, 198);
             this.txtV720.Name = "txtV720";
-            this.txtV720.Size = new System.Drawing.Size(150, 29);
+            this.txtV720.Size = new System.Drawing.Size(150, 24);
             this.txtV720.TabIndex = 15;
             // 
             // lblV1080
@@ -197,7 +197,7 @@ namespace CinemaProject.Forms
             this.txtV1080.ForeColor = System.Drawing.Color.White;
             this.txtV1080.Location = new System.Drawing.Point(129, 228);
             this.txtV1080.Name = "txtV1080";
-            this.txtV1080.Size = new System.Drawing.Size(150, 29);
+            this.txtV1080.Size = new System.Drawing.Size(150, 24);
             this.txtV1080.TabIndex = 18;
             // 
             // btnSave
@@ -304,6 +304,7 @@ namespace CinemaProject.Forms
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "MovieEditForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Добавление фильма";

@@ -1,5 +1,4 @@
-﻿using CinemaProject.Data;
-using CinemaProject.Models;
+﻿using CinemaProject.Models;
 using Npgsql;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ namespace CinemaProject.Repositories
 {
     public class MovieRepository
     {
-        private readonly string connectionString = DbConfig.ConnectionString;
+        private readonly string connectionString = "Host=localhost;Port=5432;Database=cinema_db;Username=postgres;Password=987";
 
         private NpgsqlConnection ConnectionDB()
         {

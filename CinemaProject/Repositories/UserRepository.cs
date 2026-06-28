@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Npgsql;
-using CinemaProject.Data;
 using CinemaProject.Models;
 
 namespace CinemaProject.Repositories
 {
     public class UserRepository
     {
-        private readonly string connectionString = DbConfig.ConnectionString;
+        private readonly string connectionString = "Host=localhost;Port=5432;Database=cinema_db;Username=postgres;Password=987";
 
         private NpgsqlConnection ConnectionDB()
         {

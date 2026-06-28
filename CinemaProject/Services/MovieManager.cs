@@ -16,7 +16,7 @@ namespace CinemaProject.Managers
         }
 
         public List<Movie> SearchMovies(string query)
-        {
+        {   
             return repo_.SearchMovies(query);
         }
 
@@ -25,9 +25,9 @@ namespace CinemaProject.Managers
             return repo_.GetMoviesByGenre(genre);
         }
 
-        public void AddMovie(Movie newMovie)
+        public void AddMovie(Movie movie)
         {
-            repo_.AddMovie(newMovie);
+            repo_.AddMovie(movie);
         }
 
         public void UpdateMovie(Movie updatedMovie)

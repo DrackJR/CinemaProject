@@ -49,7 +49,7 @@ namespace CinemaProject.Forms
             this.txtLogin.ForeColor = System.Drawing.Color.White;
             this.txtLogin.Location = new System.Drawing.Point(160, 18);
             this.txtLogin.Name = "txtLogin";
-            this.txtLogin.Size = new System.Drawing.Size(130, 29);
+            this.txtLogin.Size = new System.Drawing.Size(130, 24);
             this.txtLogin.TabIndex = 1;
             // 
             // lblPassword
@@ -68,7 +68,7 @@ namespace CinemaProject.Forms
             this.txtPassword.ForeColor = System.Drawing.Color.White;
             this.txtPassword.Location = new System.Drawing.Point(160, 58);
             this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(130, 29);
+            this.txtPassword.Size = new System.Drawing.Size(130, 24);
             this.txtPassword.TabIndex = 3;
             this.txtPassword.UseSystemPasswordChar = true;
             // 
@@ -88,7 +88,7 @@ namespace CinemaProject.Forms
             this.txtConfirm.ForeColor = System.Drawing.Color.White;
             this.txtConfirm.Location = new System.Drawing.Point(160, 98);
             this.txtConfirm.Name = "txtConfirm";
-            this.txtConfirm.Size = new System.Drawing.Size(130, 29);
+            this.txtConfirm.Size = new System.Drawing.Size(130, 24);
             this.txtConfirm.TabIndex = 5;
             this.txtConfirm.UseSystemPasswordChar = true;
             // 
@@ -122,6 +122,7 @@ namespace CinemaProject.Forms
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "RegisterForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Регистрация";

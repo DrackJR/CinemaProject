@@ -3,6 +3,7 @@ using CinemaProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace CinemaProject.Forms
@@ -31,21 +32,33 @@ namespace CinemaProject.Forms
             RenderRecommendations();
         }
 
-        public void LoadMovieCatalog(List<Movie> movies)
+        public void LoadMovieCatalog(List<Movie> movies, bool isSearch = false)
         {
             flpMovieCatalog.Controls.Clear();
 
             if (movies == null || movies.Count == 0)
             {
+
+                string message;
+
+                if (isSearch)
+                {
+                    message = "По вашему запросу ничего не найдено";
+                }
+                else
+                {
+                    message = "Не удалось загрузить список фильмов. Попробуйте зайти позже";
+                }
+
                 Label lblEmpty = new Label()
                 {
-                    Text = "Не удалось загрузить список фильмов. Попробуйте зайти позже",
-                    ForeColor = Color.Gray,
-                    Font = new Font("Segoe UI", 12, FontStyle.Italic),
-                    AutoSize = false,
-                    Width = flpMovieCatalog.Width - 30,
-                    Height = 100,
-                    TextAlign = ContentAlignment.MiddleCenter
+                   Text = message,
+                   ForeColor = Color.Gray,
+                   Font = new Font("Segoe UI", 12, FontStyle.Italic),
+                   AutoSize = false,
+                   Width = flpMovieCatalog.Width - 30,
+                   Height = 100,
+                   TextAlign = ContentAlignment.MiddleCenter
                 };
 
                 flpMovieCatalog.Controls.Add(lblEmpty);
@@ -195,7 +208,15 @@ namespace CinemaProject.Forms
 
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            LoadMovieCatalog(movieManager_.SearchMovies(txtSearch.Text));
+            string keyword = txtSearch.Text.Trim().ToLower();
+
+
+            var allMovies = movieManager_.GetAllMovies();
+
+
+            var filteredMovies = allMovies.Where(m => m.Title.ToLower().Contains(keyword)).ToList();
+
+            LoadMovieCatalog(filteredMovies, true);
         }
 
         private void cmbGenreFilter_SelectedIndexChanged(object sender, EventArgs e)
@@ -219,7 +240,7 @@ namespace CinemaProject.Forms
             {
                 string quality = "720p";
 
-                using (Form qForm = new Form() { Text = "О фильме: " + movie.Title, Width = 350, Height = 300, FormBorderStyle = FormBorderStyle.FixedDialog, MaximizeBox = false, MinimizeBox = false, StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(26, 26, 36) })
+                using (Form qForm = new Form() { Text = "О фильме: " + movie.Title, Width = 350, Height = 330, FormBorderStyle = FormBorderStyle.FixedDialog, MaximizeBox = false, MinimizeBox = false, StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(32, 33, 36) })   
                 {
                     TextBox txtMovieDescription = new TextBox()
                     {
@@ -231,33 +252,27 @@ namespace CinemaProject.Forms
                         Multiline = true,
                         ReadOnly = true,
                         ScrollBars = ScrollBars.Vertical,
-                        BackColor = Color.FromArgb(37, 37, 50),
+                        BackColor = Color.FromArgb(40, 42, 48),
                         ForeColor = Color.White,
-                        BorderStyle = BorderStyle.FixedSingle,
-                        Font = new Font("Segoe UI", 9.5F)
+                        BorderStyle = BorderStyle.FixedSingle
                     };
 
-                    Color textColor = Color.FromArgb(170, 170, 180);
-                    Font radioFont = new Font("Segoe UI", 9.5F);
-
-                    RadioButton r1 = new RadioButton() { Text = "480p", Top = 130, Left = 20, ForeColor = textColor, Font = radioFont };
-                    RadioButton r2 = new RadioButton() { Text = "720p", Top = 155, Left = 20, Checked = true, ForeColor = textColor, Font = radioFont };
-                    RadioButton r3 = new RadioButton() { Text = "1080p", Top = 180, Left = 20, ForeColor = textColor, Font = radioFont };
-
-                    Button ok = new Button()
+                    Label lblRating = new Label()
                     {
-                        Text = "Смотреть",
-                        Top = 215,
-                        Left = 110,
-                        Width = 130,
-                        Height = 32,
-                        BackColor = Color.FromArgb(0, 122, 255),
-                        ForeColor = Color.White,
-                        FlatStyle = FlatStyle.Flat,
-                        Cursor = Cursors.Hand,
-                        Font = new Font("Segoe UI", 9.5F, FontStyle.Bold)
+                        Text = $"Рейтинг: {movie.Rating:F1} / 10",
+                        Top = 125,
+                        Left = 20,
+                        Width = 200,
+                        Height = 20,
+                        Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                        ForeColor = Color.Gold
                     };
-                    ok.FlatAppearance.BorderSize = 0;
+
+                    RadioButton r1 = new RadioButton() { Text = "480p", Top = 155, Left = 20, ForeColor = Color.White };
+                    RadioButton r2 = new RadioButton() { Text = "720p", Top = 180, Left = 20, Checked = true, ForeColor = Color.White };
+                    RadioButton r3 = new RadioButton() { Text = "1080p", Top = 205, Left = 20, ForeColor = Color.White };
+
+                    Button ok = new Button() { Text = "Смотреть", Top = 245, Left = 120, Width = 100, Height = 30, BackColor = Color.FromArgb(0, 120, 215), ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
 
                     ok.Click += (s, ev) => {
                         if (r1.Checked) quality = "480p";
@@ -269,6 +284,7 @@ namespace CinemaProject.Forms
                     };
 
                     qForm.Controls.Add(txtMovieDescription);
+                    qForm.Controls.Add(lblRating);
                     qForm.Controls.Add(r1);
                     qForm.Controls.Add(r2);
                     qForm.Controls.Add(r3);

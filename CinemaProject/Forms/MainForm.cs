@@ -18,6 +18,7 @@ namespace CinemaProject.Forms
         {
             InitializeComponent();
             currentUser_ = user;
+            userManager_.CurrentUser = user;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -235,111 +236,39 @@ namespace CinemaProject.Forms
 
         private void MovieCard_Click(object sender, EventArgs e)
         {
-            Panel card = sender as Panel;
-            if (card != null && card.Tag is Movie movie)
+            Control clickedControl = sender as Control;
+            if (clickedControl == null || clickedControl.Tag == null) return;
+
+            Movie selectedMovie = (Movie)clickedControl.Tag;
+
+            using (MovieDetailForm detailForm = new MovieDetailForm(selectedMovie))
             {
-                string quality = "720p";
-
-                using (Form qForm = new Form() { Text = "О фильме: " + movie.Title, Width = 350, Height = 330, FormBorderStyle = FormBorderStyle.FixedDialog, MaximizeBox = false, MinimizeBox = false, StartPosition = FormStartPosition.CenterParent, BackColor = Color.FromArgb(32, 33, 36) })   
+                if (detailForm.ShowDialog() == DialogResult.OK)
                 {
-                    TextBox txtMovieDescription = new TextBox()
+                    string quality = detailForm.SelectedQuality;
+
+                    string videoPath = selectedMovie.GetVideoPathByQuality(quality);
+
+                    if (string.IsNullOrEmpty(videoPath))
                     {
-                        Text = string.IsNullOrEmpty(movie.Description) ? "Описание отсутствует." : movie.Description,
-                        Top = 15,
-                        Left = 15,
-                        Width = 305,
-                        Height = 100,
-                        Multiline = true,
-                        ReadOnly = true,
-                        ScrollBars = ScrollBars.Vertical,
-                        BackColor = Color.FromArgb(40, 42, 48),
-                        ForeColor = Color.White,
-                        BorderStyle = BorderStyle.FixedSingle
-                    };
+                        videoPath = AutoFallbackQuality(selectedMovie, quality);
+                    }
 
-                    Label lblRating = new Label()
+                    if (string.IsNullOrEmpty(videoPath))
                     {
-                        Text = $"Рейтинг: {movie.Rating:F1} / 10",
-                        Top = 125,
-                        Left = 20,
-                        Width = 200,
-                        Height = 20,
-                        Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                        ForeColor = Color.Gold
-                    };
-
-                    RadioButton r1 = new RadioButton() { Text = "480p", Top = 155, Left = 20, ForeColor = Color.White };
-                    RadioButton r2 = new RadioButton() { Text = "720p", Top = 180, Left = 20, Checked = true, ForeColor = Color.White };
-                    RadioButton r3 = new RadioButton() { Text = "1080p", Top = 205, Left = 20, ForeColor = Color.White };
-
-                    Button ok = new Button() { Text = "Смотреть", Top = 245, Left = 120, Width = 100, Height = 30, BackColor = Color.FromArgb(0, 120, 215), ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
-
-                    ok.Click += (s, ev) => {
-                        if (r1.Checked) quality = "480p";
-                        if (r2.Checked) quality = "720p";
-                        if (r3.Checked) quality = "1080p";
-
-                        qForm.DialogResult = DialogResult.OK;
-                        qForm.Close();
-                    };
-
-                    qForm.Controls.Add(txtMovieDescription);
-                    qForm.Controls.Add(lblRating);
-                    qForm.Controls.Add(r1);
-                    qForm.Controls.Add(r2);
-                    qForm.Controls.Add(r3);
-                    qForm.Controls.Add(ok);
-
-                    if (qForm.ShowDialog() != DialogResult.OK)
-                    {
+                        MessageBox.Show("К сожалению, video недоступно ни в одном разрешении.",
+                                        "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
-                }
 
-                string videoPath = movie.GetVideoPathByQuality(quality);
+                    userManager_.AddToHistory(selectedMovie.Id);
 
-                if (string.IsNullOrEmpty(videoPath))
-                {
-                    string[] backupQualities;
+                    RenderRecommendations();
 
-                    if (quality == "720p")
+                    using (VideoPlayerForm playerForm = new VideoPlayerForm(videoPath))
                     {
-                        backupQualities = new string[] { "1080p", "480p" };
+                        playerForm.ShowDialog();
                     }
-                    else if (quality == "1080p")
-                    {
-                        backupQualities = new string[] { "720p", "480p" };
-                    }
-                    else
-                    {
-                        backupQualities = new string[] { "720p", "1080p" };
-                    }
-
-                    bool alternativeFound = false;
-                    foreach (string altQuality in backupQualities)
-                    {
-                        string altPath = movie.GetVideoPathByQuality(altQuality);
-
-                        if (!string.IsNullOrEmpty(altPath))
-                        {
-                            videoPath = altPath;
-                            alternativeFound = true;
-                            break;
-                        }
-                    }
-
-                    if (!alternativeFound)
-                    {
-                        MessageBox.Show("Видео недоступно", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-                }
-                userManager_.AddToHistory(movie.Id);
-                RenderRecommendations();
-
-                using (VideoPlayerForm playerForm = new VideoPlayerForm(videoPath))
-                {
-                    playerForm.ShowDialog();
                 }
             }
         }
@@ -354,6 +283,28 @@ namespace CinemaProject.Forms
             {
                 lbRecommendations.Items.Add(r.Title + " — ★" + r.Rating.ToString("F1"));
             }
+        }
+        private string AutoFallbackQuality(Movie movie, string failedQuality)
+        {
+            string[] alternatives;
+
+            if (failedQuality == "720p")
+                alternatives = new string[] { "1080p", "480p" };
+            else if (failedQuality == "1080p")
+                alternatives = new string[] { "720p", "480p" };
+            else
+                alternatives = new string[] { "720p", "1080p" };
+
+            foreach (var quality in alternatives)
+            {
+                string path = movie.GetVideoPathByQuality(quality);
+                if (!string.IsNullOrEmpty(path))
+                {
+                    return path;
+                }
+            }
+
+            return null;
         }
 
         private void btnOpenHistory_Click(object sender, EventArgs e)

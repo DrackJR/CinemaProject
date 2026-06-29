@@ -7,10 +7,10 @@ namespace CinemaProject.Repositories
 {
     public class UserRepository
     {
-        private const string connectionString = "Host=192.168.1.48;Username=st53-6;Password=536;Database=cinema_db";
-        //private readonly string connectionString = "Host=localhost;Port=5432;Database=cinema_db;Username=postgres;Password=987";
+        //private const string connectionString = "Host=192.168.1.48;Username=st53-6;Password=536;Database=cinema_db";
+        private readonly string connectionString = "Host=localhost;Port=5432;Database=cinema_db;Username=postgres;Password=123";
 
-        private NpgsqlConnection ConnectionDB()
+        public NpgsqlConnection ConnectionDB()
         {
             NpgsqlConnection conn = new NpgsqlConnection(connectionString);
             conn.Open();
@@ -65,35 +65,46 @@ namespace CinemaProject.Repositories
             }
         }
 
-        public void RegisterUser(string login, string password, string role)
+        public int RegisterUser(string login, string password, string role)
         {
             using (NpgsqlConnection conn = ConnectionDB())
             {
-                using (NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO users (login, password, role) VALUES (@login, @password, @role)", conn))
+                string sql = "INSERT INTO users (login, password, role) VALUES (@login, @password, @role) RETURNING id;";
+
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@login", login);
                     cmd.Parameters.AddWithValue("@password", password);
                     cmd.Parameters.AddWithValue("@role", role);
-                    cmd.ExecuteNonQuery();
+
+                    int newId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    return newId;
                 }
             }
         }
 
         public List<int> GetUserHistory(int userId)
         {
-            List<int> history = new List<int>();
+            List<int> movieIds = new List<int>();
+
             using (NpgsqlConnection conn = ConnectionDB())
             {
-                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT movie_id FROM watch_history WHERE user_id = @userId", conn))
+                string sql = "SELECT movie_id FROM history WHERE user_id = @userId ORDER BY id DESC;";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
                 {
                     cmd.Parameters.AddWithValue("@userId", userId);
                     using (NpgsqlDataReader reader = cmd.ExecuteReader())
                     {
-                        while (reader.Read()) history.Add(reader.GetInt32(0));
+                        while (reader.Read())
+                        {
+                            movieIds.Add(reader.GetInt32(0));
+                        }
                     }
                 }
             }
-            return history;
+
+            return movieIds;
         }
 
         public void AddToHistory(int userId, int movieId)
@@ -110,6 +121,7 @@ namespace CinemaProject.Repositories
                 }
             }
         }
+
 
         public List<Movie> GetPersonalRecommendations(int userId)
         {
@@ -174,6 +186,19 @@ namespace CinemaProject.Repositories
                 }
             }
             return recommendations;
+        }
+        public void SaveMovieToHistory(int userId, int movieId)
+        {
+            using (NpgsqlConnection conn = ConnectionDB())
+            {
+                string sql = "INSERT INTO history (user_id, movie_id) VALUES (@userId, @movieId);";
+                using (NpgsqlCommand cmd = new NpgsqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@userId", userId);
+                    cmd.Parameters.AddWithValue("@movieId", movieId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
         }
 
         private static void FillMovies(NpgsqlCommand cmd, List<Movie> list)

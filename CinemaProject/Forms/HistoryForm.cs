@@ -1,5 +1,4 @@
-﻿using CinemaProject.Managers;
-using CinemaProject.Models;
+﻿using CinemaProject.Models;
 using CinemaProject.Repositories;
 using System;
 using System.Collections.Generic;
@@ -10,8 +9,8 @@ namespace CinemaProject.Forms
     public partial class HistoryForm : Form
     {
         private readonly User user_;
-        private readonly MovieManager movieManager_ = new MovieManager();
-        private readonly UserRepository userRepository_ = new UserRepository();
+        private readonly UserRepository userRepo_ = new UserRepository();
+        private readonly MovieRepository movieRepo_ = new MovieRepository();
 
         public HistoryForm(User user)
         {
@@ -21,30 +20,31 @@ namespace CinemaProject.Forms
 
         private void HistoryForm_Load(object sender, EventArgs e)
         {
+            this.Text = $"История просмотров | {user_.Login}";
+            LoadWatchHistoryFromDb();
+        }
+
+        private void LoadWatchHistoryFromDb()
+        {
             lbHistory.Items.Clear();
 
-            try
+            List<int> watchedMovieIds = userRepo_.GetUserHistory(user_.Id);
+
+            if (watchedMovieIds == null || watchedMovieIds.Count == 0)
             {
-                List<int> movieIds = userRepository_.GetUserHistory(user_.Id);
-
-                if (movieIds.Count == 0)
-                {
-                    lbHistory.Items.Add("Вы еще не посмотрели ни одного фильма.");
-                    return;
-                }
-
-                foreach (int movieId in movieIds)
-                {
-                    Movie movie = movieManager_.GetMovieById(movieId);
-                    if (movie != null)
-                    {
-                        lbHistory.Items.Add($"{movie.Title} ({movie.Genre})");
-                    }
-                }
+                lbHistory.Items.Add("Вы еще не посмотрели ни одного фильма.");
+                return;
             }
-            catch (Exception ex)
+
+            var allMovies = movieRepo_.GetAllMovies();
+
+            foreach (int movieId in watchedMovieIds)
             {
-                MessageBox.Show("Ошибка при загрузке истории: " + ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var movie = allMovies.Find(m => m.Id == movieId);
+                if (movie != null)
+                {
+                    lbHistory.Items.Add($"{movie.Title} — Просмотрено");
+                }
             }
         }
 

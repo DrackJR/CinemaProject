@@ -7,7 +7,8 @@ namespace CinemaProject.Repositories
 {
     public class UserRepository
     {
-        private readonly string connectionString = "Host=localhost;Port=5432;Database=cinema_db;Username=postgres;Password=987";
+        private const string connectionString = "Host=192.168.1.48;Username=st53-6;Password=536;Database=cinema_db";
+        //private readonly string connectionString = "Host=localhost;Port=5432;Database=cinema_db;Username=postgres;Password=987";
 
         private NpgsqlConnection ConnectionDB()
         {
